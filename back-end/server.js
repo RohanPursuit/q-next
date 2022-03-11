@@ -32,14 +32,22 @@ io.use((socket, next)=> {
     console.log(socket.id)
     io.to(socket.id).emit("private-message", socket.id)
     socket.on("disconnect", () => {
+        //on disconnect find song for that room and delete
         console.log(`User ${socket.id} disconnected`)
     })
 })
 
 //ROUTES
-app.get("/", (req, res)=> {
+app.get("/", async (req, res)=> {
     console.log("GET /")
-    res.send("Hello World")
+    const connectedSocket = await io.sockets.allSockets()
+    //if client connected stream file
+    if(connectedSocket.has(req.query.id)){
+        res.send("Hello World")
+
+    }else {
+        res.send("Not Connected")
+    }
 })
 
 app.get("*", (req, res)=> {
