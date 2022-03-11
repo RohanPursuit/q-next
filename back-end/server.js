@@ -21,15 +21,20 @@ const io = new Server(httpServer, {
 // MIDDLEWARE
 app.use(cors())
 app.use(express.json())
-io.use((socket, next)=> {
-    const test = true
-    if(test){
+io.use( async (socket, next)=> {
+    const connectTo = socket.handshake.query.id
+    const connectedSocket = await io.sockets.allSockets()
+    if(!connectTo){
+        console.log("Player: " + socket.id + " started a room")
+        next()
+    }else if(connectedSocket.has(connectTo)){
+        console.log(`${socket.id} joined room ${connectTo}`)
+        socket.join(connectTo)
         next()
     }else {
         next(new Error("No Access"))
     }
 }).on("connection", (socket) => {
-    console.log(socket.id)
     io.to(socket.id).emit("private-message", socket.id)
     socket.on("disconnect", () => {
         //on disconnect find song for that room and delete
