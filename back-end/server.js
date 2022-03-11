@@ -30,7 +30,7 @@ io.use((socket, next)=> {
     }
 }).on("connection", (socket) => {
     console.log(socket.id)
-
+    io.to(socket.id).emit("private-message", socket.id)
     socket.on("disconnect", () => {
         console.log(`User ${socket.id} disconnected`)
     })
