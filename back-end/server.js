@@ -14,7 +14,7 @@ const app = express()
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors:{
-        origin: []
+        origin: [process.env.LOCAL]
     }
 });
 
@@ -22,14 +22,18 @@ const io = new Server(httpServer, {
 app.use(cors())
 app.use(express.json())
 io.use((socket, next)=> {
-    const test = false
+    const test = true
     if(test){
         next()
     }else {
         next(new Error("No Access"))
     }
 }).on("connection", (socket) => {
-    console.log(socket)
+    console.log(socket.id)
+
+    socket.on("disconnect", () => {
+        console.log(`User ${socket.id} disconnected`)
+    })
 })
 
 //ROUTES
