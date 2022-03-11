@@ -11,12 +11,12 @@ const Player = () => {
     const startConnect = useCallback(() => {
             socket().on("connect", () => {
                 console.log("connected")
-                axios.get(URL)
+            }).on("private-message", (message) => {
+                setRoomId(message)
+                axios.get(URL, {params: {id: message}})
                 .then((response) => {
                     const data = response.data
                 })
-            }).on("private-message", (message) => {
-                setRoomId(message)
             })
         }
     )
