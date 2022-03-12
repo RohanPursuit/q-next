@@ -3,7 +3,7 @@ import {useState, useEffect, useCallback} from "react"
 import axios from "axios"
 import { useParams } from "react-router-dom"
 
-const {REACT_APP_PORT: PORT, REACT_APP_API_URL: URL} = process.env
+const {REACT_APP_API_URL: URL} = process.env
 
 const Request = () => {
     const {id} = useParams()
@@ -26,9 +26,9 @@ const Request = () => {
             }).on("private-message", (message) => {
                 // setClientId(message)
                 socket.emit("get-playlist", id)
-            }).on("get-playlist", (array) => {
+            }).on("get-playlist", ({current, songs}) => {
                 console.log("get-playlist")
-                setPlaylist(array)
+                setPlaylist(songs)
             })
             }, []
             )
@@ -49,16 +49,25 @@ const Request = () => {
 
     const handleAddToPlaylist = (song) => {
         console.log(song)
-        setPlaylist([song, ...playlist])
+        setPlaylist([...playlist, song])
         setResults([])
         socket.emit("send-playlist", {
             room: id,
-            songs: [song, ...playlist]
+            songs: [...playlist, song]
         })
     }
 
     const handleDelete = (event) => {
-        setPlaylist(playlist.filter((song, i) => Number(event.target.id) !== i))
+        const arr = playlist.filter((song, i) => Number(event.target.id) !== i)
+        setPlaylist(arr)
+        socket.emit("send-playlist", {
+            room: id,
+            songs: arr
+        })
+    }
+
+    const handlePlayNext = () => {
+        socket.emit("play-next", id)
     }
 
     useEffect(()=> {
@@ -71,7 +80,7 @@ const Request = () => {
     return (
         <div className="PlayerPage">
             {/* Stop user input if need to fetch new entry/playlist or fetch updated playlist before added user Request */}
-            <h1>Q-NEXT Request</h1>
+            <button onClick={handlePlayNext}>Q-NEXT Request</button>
             <h2>Room: {id}</h2>
             <input onChange={handleChange} type="text"  required/>
             <button onClick={handleSearch}>Search</button>
@@ -83,7 +92,7 @@ const Request = () => {
                         <button id={i} onClick={handleDelete}>Delete</button>
                     </div>
                 )
-            }):
+            }).reverse():
             results.length !== 0 && results.map((song, i) => {
                 return (
                     <div key={i} className="video-card-m">
