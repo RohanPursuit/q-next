@@ -28,6 +28,7 @@ io.use( async (socket, next)=> {
     const connectedSocket = await io.sockets.allSockets()
     if(!connectTo){
         console.log("Player: " + socket.id + " started a room")
+        playlist[socket.id] = {current: 0}
         next()
     }else if(connectedSocket.has(connectTo)){
         console.log(`${socket.id} joined room ${connectTo}`)
@@ -42,7 +43,7 @@ io.use( async (socket, next)=> {
     socket.on("get-playlist", (id) => {
         console.log("get-playlist ")
         if(!playlist[id]){
-            socket.emit("get-playlist", [])
+            socket.emit("get-playlist", {current: 0 , songs: []})
         } else {
             socket.emit("get-playlist", playlist[id])
         }
@@ -51,61 +52,80 @@ io.use( async (socket, next)=> {
 
     socket.on("send-playlist", ({room, songs}) => {
         console.log("send-playlist ", room)
-        playlist[room] = songs
-        socket.broadcast.emit("get-playlist", playlist[room])
+        playlist[room] = {...playlist[room], songs}
+        socket.in(room).emit("get-playlist", playlist[room])
+    })
+
+    socket.on("play-next", (id) => {
+        console.log("Play Next")
+        //socket.broadcast.emit("play-next", id) didn't work until i change it to socket.broadcast.emit("next", id)
+        if(playlist[id].current >=playlist[id].songs.length-1){
+            console.log("Now Playing songs at index zero! ", playlist[id] >= playlist[id].songs.length)
+            playlist[id].current = 0
+            socket.in(id).emit("next", {id, ...playlist[id]})
+        } else {
+            console.log("Now Playing New Song!")
+            playlist[id].current += 1
+            socket.in(id).emit("next", {id, ...playlist[id]})
+        }
+    })
+
+    socket.on("player-next", (id) => {
+        console.log("Play Next")
+        if(playlist[id].current >=playlist[id].songs.length-1){
+            console.log("Now Playing songs at index zero! ", playlist[id] >= playlist[id].songs.length)
+            playlist[id].current = 0
+            socket.emit("next", {id, ...playlist[id]})
+        } else {
+            console.log("Now Playing New Song!")
+            playlist[id].current += 1
+            socket.emit("next", {id, ...playlist[id]})
+        }
     })
 
     //On Disconnect
     socket.on("disconnect", () => {
         //on disconnect find song for that room and delete
+        fs.unlink("./songs/"+socket.id + ".mp4", (async (err) => {
+            if(err){
+                console.log(err)
+            }
+        }))
         console.log(`User ${socket.id} disconnected`)
     })
 })
 
 //ROUTES
-app.get("/", async (req, res)=> {
+app.get("/:id/:url", async (req, res)=> {
     console.log("GET /")
     const connectedSocket = await io.sockets.allSockets()
     //if client connected stream file
-    if(connectedSocket.has(req.query.id)){
-        res.send("Hello World")
-
+    if(connectedSocket.has(req.params.id)){
+        console.log("Trying to play??")
+        await new Promise(resolve =>
+            ytdl("https://www.youtube.com/watch?v="+req.params.url)
+            .pipe(fs.createWriteStream("./songs/"+req.params.id + '.mp4'))
+            .on('finish', ()=> {
+                fs.createReadStream("./songs/"+req.params.id + ".mp4").pipe(res)
+            })
+            ); 
     }else {
         res.send("Not Connected")
     }
-})
-
-app.post("/", async (req, res) => {
-    console.log("Post /")
-    const connectedSocket = await io.sockets.allSockets()
-    //if client connected stream file
-    if(connectedSocket.has(req.body.id)){
-        res.send("Hello World")
-
-    }else {
-        res.send("Not Connected")
-    }
-
 })
 
 app.post("/search", async (req, res) => {
     console.log("Post /search")
     const connectedSocket = await io.sockets.allSockets()
     //if client connected stream file
-    console.log(req.body)
     if(connectedSocket.has(req.body.id)){
         const {q} = req.body
-        // console.log(q)
-        // const search = (await ytsr(q, {limit: 10})).items
-        // console.log(search)
-        // res.status(200).json({success: true, payload: search})
         const filters1 = await ytsr.getFilters(q);
         const filter1 = filters1.get('Type').get('Video');
         const options = {
             limit: 10,
         }
         const searchResults = (await ytsr(filter1.url, options)).items
-        // console.log(searchResults)
         res.status(200).json({success: true, payload: searchResults})
 
     }else {
@@ -123,3 +143,29 @@ const PORT = process.env.PORT
 httpServer.listen(PORT, () => {
     console.log(`🔊Listening to music on port ${PORT}🔊`)
 })
+
+setInterval( async function(){
+    console.log("Trying to delete files.")
+    const connectedSocket = await io.sockets.allSockets()
+    console.log(connectedSocket)
+    fs.readdir("./songs", (err, files) => {
+        if (err){
+            console.log(err)
+            // throw err;
+        } 
+        
+
+        for (const file of files) {
+            if(!connectedSocket.has(file.split(".")[0])){
+                console.log(file.split(".")[0])
+                  fs.unlink(path.join("./songs", file), err => {
+                    if (err) throw err;
+                  });
+            }
+        }
+      });
+}, 20000)
+/**
+ * Problems:
+ * songs aren't deleted correctly
+ */
