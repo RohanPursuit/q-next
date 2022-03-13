@@ -170,7 +170,7 @@ setInterval( async function(){
         }
         
       });
-}, 20000)
+}, 40000)
 /**
  * Problems:
  * songs aren't deleted correctly
