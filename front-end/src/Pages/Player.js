@@ -27,7 +27,7 @@ const Player = () => {
         }])
 
     const [socket, setSocket] = useState(null)
-    const [videoUrl, setVideoUrl] = useState("http://192.168.1.159:3004")
+    const [videoUrl, setVideoUrl] = useState(process.env.REACT_APP_API_URL)
     
     const startConnect = useCallback(() => {
             const socket = io(URL)
