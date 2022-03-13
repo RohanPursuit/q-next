@@ -47,6 +47,7 @@ video {
 	position: fixed;
 	background-color: #fff;
 	width: 100vw;
+	z-index: 20;
 }
 
 img {
@@ -83,7 +84,6 @@ input {
 	/* transform: rotate(-90deg); */
 	height: 60vw;
 	background-color: rgb(49, 22, 22);
-	z-index: -20;
 }
 
 .video-delete {
