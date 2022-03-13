@@ -100,13 +100,14 @@ app.get("/:id/:url", async (req, res)=> {
     console.log("GET /")
     const connectedSocket = await io.sockets.allSockets()
     //if client connected stream file
-    if(connectedSocket.has(req.params.id)){
+    const {id, url} = req.params
+    if(connectedSocket.has(id)){
         console.log("Trying to play??")
-        await new Promise(resolve =>
-            ytdl("https://www.youtube.com/watch?v="+req.params.url)
-            .pipe(fs.createWriteStream("./songs/"+req.params.id + '.mp4'))
+        await new Promise(() =>
+            ytdl("https://www.youtube.com/watch?v="+url)
+            .pipe(fs.createWriteStream("./songs/"+ id + '.mp4'))
             .on('finish', ()=> {
-                fs.createReadStream("./songs/"+req.params.id + ".mp4").pipe(res)
+                fs.createReadStream("./songs/"+ id + ".mp4").pipe(res)
             })
             ); 
     }else {
