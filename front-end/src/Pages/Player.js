@@ -79,7 +79,7 @@ const Player = () => {
         <div className="PlayerPage">
             <h1>Q-NEXT Player</h1>
             <h2>Room: {roomId}</h2>
-            <QRCode value={"http://192.168.1.159:3000/rooms/"+roomId} />
+            <QRCode value={process.env.REACT_APP_IP+"/rooms/"+roomId} />
             {songs.length !== 0 && songs.map((song, i) => {
                     return (
                         <div key={i} className="video-card-m">
