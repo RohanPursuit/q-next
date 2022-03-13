@@ -109,7 +109,7 @@ app.get("/:id/:url", async (req, res)=> {
             .on('finish', ()=> {
                 console.log("Finished write stream")
                 setTimeout(() => {
-                    fs.createReadStream("songs/"+ "c3Ix98a_AwCSyd5uAAAB" + ".mp4").pipe(res)
+                    fs.createReadStream("songs/"+ id + ".mp4").pipe(res)
 
                 }, 4000)
             })
