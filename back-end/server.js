@@ -154,17 +154,19 @@ setInterval( async function(){
             // throw err;
         } 
         
-
-        for (const file of files) {
-            if(!connectedSocket.has(file.split(".")[0])){
-                console.log(file.split(".")[0])
-                  fs.unlink(path.join("./songs", file), err => {
-                    if (err){
-                        console.log(err)
-                    };
-                  });
+        if(!!files && files.length > 0){
+                for (const file of files) {
+                if(!connectedSocket.has(file.split(".")[0])){
+                    console.log(file.split(".")[0])
+                    fs.unlink(path.join("./songs", file), err => {
+                        if (err){
+                            console.log(err)
+                        };
+                    });
+                }
             }
         }
+        
       });
 }, 20000)
 /**
