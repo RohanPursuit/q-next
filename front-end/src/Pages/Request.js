@@ -80,10 +80,13 @@ const Request = () => {
     return (
         <div className="PlayerPage">
             {/* Stop user input if need to fetch new entry/playlist or fetch updated playlist before added user Request */}
-            <button onClick={handlePlayNext}>Q-NEXT Request</button>
-            <h2>Room: {id}</h2>
-            <input onChange={handleChange} type="text"  required/>
-            <button onClick={handleSearch}>Search</button>
+            <div className="search-next">
+                <button onClick={handlePlayNext}>Q-NEXT Request</button>
+                <h2>Room: {id}</h2>
+                <input onChange={handleChange} type="text"  required/>
+                <button onClick={handleSearch}>Search</button>
+            </div>
+           
             {results.length === 0 ? playlist.length !== 0 && playlist.length !== 0 && playlist.map((song, i) => {
                 return (
                     <div key={i} className="video-card-m">
