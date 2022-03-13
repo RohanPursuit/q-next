@@ -50,7 +50,7 @@ const Player = () => {
                 console.log("Play Next")
                 handleNext(current, songs, id)
             })
-        }, []
+        }, [songs, videoUrl]
     )
 
     const updateSongs = (songs) => {
