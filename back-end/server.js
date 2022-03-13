@@ -159,7 +159,9 @@ setInterval( async function(){
             if(!connectedSocket.has(file.split(".")[0])){
                 console.log(file.split(".")[0])
                   fs.unlink(path.join("./songs", file), err => {
-                    if (err) throw err;
+                    if (err){
+                        console.log(err)
+                    };
                   });
             }
         }
