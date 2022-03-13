@@ -83,16 +83,19 @@ const Request = () => {
             <div className="search-next">
                 <button onClick={handlePlayNext}>Q-NEXT Request</button>
                 <h2>Room: {id}</h2>
-                <input onChange={handleChange} type="text"  required/>
+                <input onChange={handleChange} type="text" placeholder="Input Search"  required/>
                 <button onClick={handleSearch}>Search</button>
             </div>
-           
-            {results.length === 0 ? playlist.length !== 0 && playlist.length !== 0 && playlist.map((song, i) => {
+           <section className="request-main">
+               {results.length === 0 ? playlist.length !== 0 && playlist.length !== 0 && playlist.map((song, i) => {
                 return (
                     <div key={i} className="video-card-m">
-                        <img src={song.bestThumbnail.url} alt="" />
+                        <div className="video-delete">
+                            <img src={song.bestThumbnail.url} alt="" />
+                            <button id={i} onClick={handleDelete}>D <br />e <br />l <br />e <br />t <br />e</button>
+                        </div>
                         <h2>{song.title}</h2>
-                        <button id={i} onClick={handleDelete}>Delete</button>
+                        <hr />
                     </div>
                 )
             }).reverse():
@@ -104,6 +107,8 @@ const Request = () => {
                     </div>
                 )
             })}
+           </section>
+            
         </div>
     )
 }

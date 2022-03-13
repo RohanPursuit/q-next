@@ -51,7 +51,7 @@ video {
 
 img {
 	height: 60vw;
-	width: 100vw;
+	width: 90vw;
 }
 
 button {
@@ -67,4 +67,25 @@ input {
 	height: 40px;
 }
 
+.request-main {
+	padding-top: 28vh;
+	border: 1px solid #000;
+}
+.video-card-m {
+	padding-bottom: 20px;
+	border: 1px solid #000;
+}
 
+.video-card-m button {
+	font-size: 5.5vw;
+	font-weight: bold;
+	/* transform: rotate(-90deg); */
+	position: relative;
+	height: 60vw;
+	z-index: -20;
+}
+
+.video-delete {
+	display: flex;
+	flex-direction: row;
+}
