@@ -105,9 +105,9 @@ app.get("/:id/:url", async (req, res)=> {
         console.log("Trying to play??")
         await new Promise(() =>
             ytdl("https://www.youtube.com/watch?v="+url)
-            .pipe(fs.createWriteStream("./songs/"+ id + '.mp4'))
+            .pipe(fs.createWriteStream("songs/"+ id + '.mp4'))
             .on('finish', ()=> {
-                fs.createReadStream("./songs/"+ id + ".mp4").pipe(res)
+                fs.createReadStream("songs/"+ id + ".mp4").pipe(res)
             })
             ); 
     }else {
