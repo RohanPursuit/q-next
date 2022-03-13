@@ -1,6 +1,5 @@
 import io from "socket.io-client"
-import {useState, useEffect, useCallback, useRef} from "react"
-import axios from "axios"
+import {useState, useEffect, useCallback} from "react"
 import QRCode from "react-qr-code"
 
 const {REACT_APP_API_URL: URL} = process.env
@@ -51,7 +50,7 @@ const Player = () => {
                 console.log("Play Next")
                 handleNext(current, songs, id)
             })
-        }
+        }, []
     )
 
     const updateSongs = (songs) => {
@@ -74,7 +73,7 @@ const Player = () => {
 
     useEffect(()=> {
         startConnect()
-    }, [setVideoUrl])
+    }, [setVideoUrl, startConnect])
 
     return (
         <div className="PlayerPage">

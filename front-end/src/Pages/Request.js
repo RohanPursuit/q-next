@@ -30,7 +30,7 @@ const Request = () => {
                 console.log("get-playlist")
                 setPlaylist(songs)
             })
-            }, []
+            }, [id]
             )
             
     const handleChange = (event) => {
