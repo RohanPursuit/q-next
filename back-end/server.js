@@ -108,10 +108,7 @@ app.get("/:id/:url", async (req, res)=> {
             .pipe(fs.createWriteStream("songs/"+ id + '.mp4'))
             .on('finish', ()=> {
                 console.log("Finished write stream")
-                setTimeout(() => {
                     fs.createReadStream("songs/"+ id + ".mp4").pipe(res)
-
-                }, 4000)
             })
             ); 
     }else {
