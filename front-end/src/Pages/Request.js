@@ -75,7 +75,7 @@ const Request = () => {
         console.log("useEffect Running")
     }, [startConnect])
 
-
+    
     console.log(results)
     return (
         <div className="PlayerPage">
