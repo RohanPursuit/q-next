@@ -107,8 +107,9 @@ app.get("/:id/:url", async (req, res)=> {
             ytdl("https://www.youtube.com/watch?v="+url)
             .pipe(fs.createWriteStream("songs/"+ id + '.mp4'))
             .on('finish', ()=> {
+                console.log("Finished write stream")
                 setTimeout(() => {
-                    fs.createReadStream("songs/"+ id + ".mp4").pipe(res)
+                    fs.createReadStream("songs/"+ "c3Ix98a_AwCSyd5uAAAB" + ".mp4").pipe(res)
 
                 }, 4000)
             })
