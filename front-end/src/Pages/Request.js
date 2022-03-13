@@ -92,7 +92,7 @@ const Request = () => {
                     <div key={i} className="video-card-m">
                         <div className="video-delete">
                             <img src={song.bestThumbnail.url} alt="" />
-                            <button id={i} onClick={handleDelete}>D <br />e <br />l <br />e <br />t <br />e</button>
+                            <button id={i} onClick={handleDelete}>D</button>
                         </div>
                         <h2>{song.title}</h2>
                         <hr />
