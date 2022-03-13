@@ -58,6 +58,7 @@ const Request = () => {
     }
 
     const handleDelete = (event) => {
+        console.log(event.target)
         const arr = playlist.filter((song, i) => Number(event.target.id) !== i)
         setPlaylist(arr)
         socket.emit("send-playlist", {
@@ -75,7 +76,7 @@ const Request = () => {
         console.log("useEffect Running")
     }, [startConnect])
 
-    
+
     console.log(results)
     return (
         <div className="PlayerPage">
