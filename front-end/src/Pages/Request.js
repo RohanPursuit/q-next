@@ -38,7 +38,7 @@ const Request = () => {
     }
 
     const handleSearch = () => {
-        if(search.trim === ""){
+        if(search.trim() === ""){
             alert("Search field can not be")
             return null
         }
