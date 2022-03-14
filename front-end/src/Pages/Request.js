@@ -38,17 +38,18 @@ const Request = () => {
     }
 
     const handleSearch = () => {
-        if(search.trim() === ""){
+        if(search.trim() !== ""){
+            axios.post(`${URL}/search`, {
+                q: search,
+                id, 
+            })
+            .then((response) => {
+                setResults(response.data.payload)
+            }) 
+        } else {
             alert("Search field can not be")
-            return null
         }
-        axios.post(`${URL}/search`, {
-            q: search,
-            id, 
-        })
-        .then((response) => {
-            setResults(response.data.payload)
-        })
+       
     }
 
     const handleAddToPlaylist = (song) => {
