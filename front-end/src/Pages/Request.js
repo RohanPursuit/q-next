@@ -38,6 +38,10 @@ const Request = () => {
     }
 
     const handleSearch = () => {
+        if(search.trim === ""){
+            alert("Search field can not be")
+            return null
+        }
         axios.post(`${URL}/search`, {
             q: search,
             id, 
