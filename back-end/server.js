@@ -34,6 +34,7 @@ io.use( async (socket, next)=> {
     //     next()
     // }
     // else 
+    console.log("Server Tried to connect")
     if(!id){
         console.log("Player: " + socket.id + " started a room")
         playlist[socket.id] = {current: 0, password: ["x", "x", "x", "x"].map(x => Math.floor(Math.random()*10)).join('')}
