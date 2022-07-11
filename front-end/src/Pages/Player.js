@@ -1,11 +1,13 @@
 import io from "socket.io-client"
 import {useState, useEffect, useCallback} from "react"
 import QRCode from "react-qr-code"
+import './Player.css'
 
 const {REACT_APP_API_URL: URL} = process.env
 
 const Player = () => {
     const [roomId, setRoomId] = useState("Error: Not in a Room")
+    const [code, setCode] = useState("0")
     const [songs, setSongs] = useState([{
             "title": "Short Song (English Song)🎵 [W Lyrics] 30 seconds",
             "id": "M-mtdN6R3bQ",
@@ -49,6 +51,9 @@ const Player = () => {
             }).on("next", ({current, songs, id})=> {
                 console.log("Play Next")
                 handleNext(current, songs, id)
+            }).on("code", (code) => {
+                console.log(code)
+                setCode(code)
             })
         }
     )
@@ -70,6 +75,7 @@ const Player = () => {
         setVideoUrl(`${URL}/${id}/${songs[current].id}`)
     }
 
+    //everytime someone joins the player, the players password should change
 
     useEffect(()=> {
         startConnect()
@@ -77,20 +83,40 @@ const Player = () => {
 
     return (
         <div className="PlayerPage">
-            <h1>Q-NEXT Player</h1>
+            <section className="main">
+            {/* Q-Next logo hovering over video */}
+            <div className="video">
+            <video onEnded={handleEnded} src={videoUrl} autoPlay muted controls></video>
+            <div className="video-controls">
+                <button className="back">Back</button>
+                <button className="play">Play</button>
+                <button className="next">next</button>
+            </div>
+            </div>
+
+            <div className="roomInfo">
+            <h1>{code}</h1>
             <h2>Room: {roomId}</h2>
-            <QRCode value={process.env.REACT_APP_IP+"/rooms/"+roomId} />
+            <QRCode className="QRCode" value={process.env.REACT_APP_IP+"/rooms/"+roomId} />
+            </div>
+            </section>
+
+            <div className="playlist">
+
             {songs.length !== 0 && songs.map((song, i) => {
-                    return (
-                        <div key={i} className="video-card-m">
+                return (
+                    <div key={i} className="video-card-m">
+                        {/* <div className="image"> */}
                             <img src={song.bestThumbnail.url} alt="" />
-                            <h2>{song.title}</h2>
+                        {/* </div> */}
+                            <h4>{song.title}</h4>
                             {/* <button id={i}>Delete</button> */}
                         </div>
                     )
                 }).reverse()
             }
-            <video onEnded={handleEnded} src={videoUrl} autoPlay muted controls></video>
+            </div>
+
         </div>
     )
 }

@@ -1,0 +1,61 @@
+.PlayerPage .main{
+    display: flex;
+    border: 1px solid black;
+}
+
+.PlayerPage .main .video{
+    width: 60vw;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.PlayerPage .video video{
+    height: 55vh;
+    max-height: 55vh;
+}
+
+h1, h2 {
+    padding: 1px;
+    margin: 1px;
+}
+
+.PlayerPage .main .roomInfo{
+    border: 1px solid black;
+    width: 40vw;
+    height: 60vh;
+    margin: auto;
+}
+
+
+
+.PlayerPage .playlist{
+   outline: 1px solid black;
+    display: flex;
+    width: 100vw;
+    height: 40vh; 
+    overflow: scroll;
+}
+
+.PlayerPage .video-card-m {
+    border: 1px solid black;
+    margin-top: auto;
+    margin-bottom: auto;
+    display: flex;
+    height: 80%;
+    width: 30vw;
+    min-width: 250px;
+    margin-left: 15px;
+}
+
+/* .PlayerPage .video-card-m h2{
+    text-overflow: ellipsis;
+} */
+
+
+.PlayerPage .video-card-m img {
+	height: 100%;
+	width: 40%;
+    object-fit: cover;
+}

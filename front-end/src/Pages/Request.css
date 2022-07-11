@@ -1,0 +1,53 @@
+.RequestPage video {
+	height: 300px;
+	width: 300px;
+}
+
+.RequestPage .search-next {
+	margin: 0px;
+	position: fixed;
+	background-color: #fff;
+	width: 100vw;
+	z-index: 20;
+}
+
+.RequestPage .video-card-m img {
+	height: 60vw;
+	width: 90vw;
+}
+
+.RequestPage button {
+	font-size: 25px;
+	width: 100%;
+	height: 50px;
+}
+
+.RequestPage input {
+	margin: 0px;
+	font-size: 25px;
+	width: 100vw;
+	height: 40px;
+}
+
+.RequestPage .request-main {
+	padding-top: 28vh;
+	border: 1px solid #000;
+}
+.RequestPage .video-card-m {
+	padding-bottom: 20px;
+	border: 1px solid #000;
+}
+
+.RequestPage .video-card-m button {
+	font-size: 5.5vw;
+	font-weight: bold;
+	color: white;
+	/* transform: rotate(-90deg); */
+	height: 60vw;
+	background-color: rgb(49, 22, 22);
+}
+
+.RequestPage .video-delete {
+	display: flex;
+	flex-direction: row;
+}

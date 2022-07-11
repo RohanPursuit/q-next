@@ -37,7 +37,7 @@
 	}
 }
 
-video {
+/* video {
 	height: 300px;
 	width: 300px;
 }
@@ -50,7 +50,7 @@ video {
 	z-index: 20;
 }
 
-img {
+.video-card-m img {
 	height: 60vw;
 	width: 90vw;
 }
@@ -81,7 +81,7 @@ input {
 	font-size: 5.5vw;
 	font-weight: bold;
 	color: white;
-	/* transform: rotate(-90deg); */
+	transform: rotate(-90deg);
 	height: 60vw;
 	background-color: rgb(49, 22, 22);
 }
@@ -90,3 +90,7 @@ input {
 	display: flex;
 	flex-direction: row;
 }
+
+.QRCode {
+	margin: 10%;
+} */

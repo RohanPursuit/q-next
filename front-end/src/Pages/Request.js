@@ -2,6 +2,7 @@ import io from "socket.io-client"
 import {useState, useEffect, useCallback} from "react"
 import axios from "axios"
 import { useParams } from "react-router-dom"
+import './Request.css'
 
 const {REACT_APP_API_URL: URL} = process.env
 
@@ -12,12 +13,14 @@ const Request = () => {
     const [results, setResults] = useState([])
     const [playlist, setPlaylist] = useState([])
     const [socket, setSocket] = useState(null)
+    const [password, setPassword] = useState(null)
     // const [clientId, setClientId] = useState(null)
     
-    const startConnect = useCallback(() => {
+    const startConnect = useCallback((password) => {
             const socket = io(URL, {
                     query: {
                         id: id,
+                        password: password
                     }
                 })
             setSocket(socket)
@@ -76,17 +79,24 @@ const Request = () => {
         socket.emit("play-next", id)
     }
 
+    const handleEmptyRoom = () => {
+        socket.emit("clear-room", id)
+    }
+
     useEffect(()=> {
-        startConnect()
+       const password =  prompt("Some Alert", "Password")
+       setPassword(password)
+        startConnect(password)
         console.log("useEffect Running")
     }, [startConnect])
 
 
     console.log(results)
     return (
-        <div className="PlayerPage">
+        <div className="RequestPage">
             {/* Stop user input if need to fetch new entry/playlist or fetch updated playlist before added user Request */}
             <div className="search-next">
+            <button onClick={handleEmptyRoom}>Empty Room</button>
                 <button onClick={handlePlayNext}>Q-NEXT Request</button>
                 <h2>Room: {id}</h2>
                 <input onChange={handleChange} type="text" placeholder="Input Search"  required/>
