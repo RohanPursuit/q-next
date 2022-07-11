@@ -19,26 +19,61 @@ const io = new Server(httpServer, {
 });
 
 const playlist = {}
+const playerRooms = []
+let admin = null
 
 // MIDDLEWARE
 app.use(cors())
 app.use(express.json())
 io.use( async (socket, next)=> {
-    const connectTo = socket.handshake.query.id
+    const {id, password} = socket.handshake.query
     const connectedSocket = await io.sockets.allSockets()
-    if(!connectTo){
+    // if(password === process.env.ADMIN){
+    //     socket.join(id)
+    //     admin = socket.id
+    //     next()
+    // }
+    // else 
+    if(!id){
         console.log("Player: " + socket.id + " started a room")
-        playlist[socket.id] = {current: 0}
+        playlist[socket.id] = {current: 0, password: ["x", "x", "x", "x"].map(x => Math.floor(Math.random()*10)).join('')}
+        playerRooms.push(socket.id)
         next()
-    }else if(connectedSocket.has(connectTo)){
-        console.log(`${socket.id} joined room ${connectTo}`)
-        socket.join(connectTo)
+    }else if(connectedSocket.has(id)){
+        console.log(`${socket.id} joined room ${id}`)
+        if(playlist[id].password !== password){
+            next(new Error("No Access"))
+        } else {
+            playlist[id] = {...playlist[id], password: ["x", "x", "x", "x"].map(x => Math.floor(Math.random()*10)).join('')}  
+        }
+        socket.join(id)
+        next()
+    }else if(id === "rooms"){
         next()
     }else {
         next(new Error("No Access"))
     }
-}).on("connection", (socket) => {
-    io.to(socket.id).emit("private-message", socket.id)
+}).on("connection", async (socket) => {
+    //new code
+    console.log("Get all Rooms said, ", playerRooms)
+    io.to(socket.id).emit("send-room", playerRooms)
+
+    socket.on("get-rooms", () => {
+        io.to(socket.id).emit("send-room", playerRooms)
+    })
+
+    // if(socket.id in playlist){
+    //     console.log("Player Code", playlist[socket.id].password)
+    //     io.to(socket.id).emit("code", playlist[socket.id].password) 
+    // }
+
+    if([...socket.rooms][0] in playlist){
+        console.log("Client Joined Room", playlist[[...socket.rooms][0]].password)
+        io.to([...socket.rooms][0]).emit("code", playlist[[...socket.rooms][0]].password) 
+    }
+
+    console.log("Rooms", [...socket.rooms][0])
+    io.to(socket.id).emit("private-message", socket.id) 
 
     socket.on("get-playlist", (id) => {
         console.log("get-playlist ")
@@ -83,8 +118,24 @@ io.use( async (socket, next)=> {
         }
     })
 
+    // socket.on("clear-room", async (id) => {
+    //     console.log("Trying to empty room ********")
+        
+    //     const connections = await io.of(id).allSockets()
+    //     connections.forEach(s => {
+    //         if(s !== id && s !== socket.id){
+    //             s.leave(id)
+    //         }
+    //     })
+    //     console.log(connections, "Connection")
+    // })
+
     //On Disconnect
     socket.on("disconnect", () => {
+        const index = playerRooms.indexOf(socket.id)
+        if(index !== -1){
+            playerRooms.splice(index, 1)
+        }
         //on disconnect find song for that room and delete
         fs.unlink("./songs/"+socket.id + ".mp4", (async (err) => {
             if(err){
@@ -148,6 +199,7 @@ httpServer.listen(PORT, () => {
 
 setInterval( async function(){
     console.log("Trying to delete files.")
+    //Should use playerRooms array to check if songs have an active room
     const connectedSocket = await io.sockets.allSockets()
     console.log(connectedSocket)
     fs.readdir("./songs", (err, files) => {
