@@ -34,7 +34,6 @@ io.use( async (socket, next)=> {
     //     next()
     // }
     // else 
-    console.log("Server Tried to connect")
     if(!id){
         console.log("Player: " + socket.id + " started a room")
         playlist[socket.id] = {current: 0, password: ["x", "x", "x", "x"].map(x => Math.floor(Math.random()*10)).join('')}
@@ -180,7 +179,7 @@ app.post("/search", async (req, res) => {
             limit: 10,
         }
         const searchResults = (await ytsr(filter1.url, options)).items
-        res.status(200).json({success: true, payload: searchResults})
+        res.status(200).json({success: true, payload: searchResults.filter(a => a.type === 'video')})
 
     }else {
         res.send("Not Connected")
